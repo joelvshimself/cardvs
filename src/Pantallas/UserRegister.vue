@@ -2,8 +2,9 @@
   <div>
     <section class="pantalla">
       <div class="text">
-        <h2>Registro de Usuarios</h2>
-        <p>Completa el formulario a continuación para unirte a nuestra comunidad.</p>
+        <h2>Join Our Community</h2>
+        <h3>Register Now</h3>
+        <p>Complete the form below to start comparing credit cards and maximizing rewards.</p>
       </div>
       <div class="cards">
         <img src="@/assets/Tarjeta.png" alt="Credit Card" class="credit-card-img" />
@@ -11,74 +12,78 @@
     </section>
 
     <InfoSection 
-      title="Únete a nosotros"
-      description="Al registrarte, podrás acceder a múltiples beneficios y comparar las mejores opciones de tarjetas de crédito."
+      title="What is CardVersus?"
+      description="CardVersus is designed to educate users about the features and benefits of various credit cards. Whether you're just starting with your first credit card or a seasoned financial expert, CardVersus helps you compare and choose the best option for your financial needs."
     />
     
-    <form @submit.prevent="registrarUsuario" class="register-form">
-      <label>Nombre:</label>
-      <input v-model="nuevoUsuario.nombre" type="text" required />
+    <form @submit.prevent="registerUser" class="register-form">
+      <h2>Register</h2>
+      <label>Name:</label>
+      <input v-model="newUser.name" type="text" required />
 
-      <label>Correo:</label>
-      <input v-model="nuevoUsuario.correo" type="email" required />
+      <label>Email:</label>
+      <input v-model="newUser.email" type="email" required />
 
-      <label>Contraseña:</label>
-      <input v-model="nuevoUsuario.password" type="password" required />
+      <label>Password:</label>
+      <input v-model="newUser.password" type="password" required />
 
-      <label>Edad:</label>
-      <input v-model="nuevoUsuario.edad" type="number" required />
+      <label>Age:</label>
+      <input v-model="newUser.age" type="number" required />
 
-      <button type="submit" class="custom-button">Registrar</button>
-      <p v-if="mensajeError">{{ mensajeError }}</p>
+      <button type="submit" class="custom-button">Register</button>
+      <p v-if="errorMessage" class="error">{{ errorMessage }}</p>
     </form>
+
+    <AboutSection />
   </div>
 </template>
 
 <script>
-// Importa Firebase Auth y Firestore
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 import { collection, addDoc } from "firebase/firestore";
 import { db } from "@/firebase";
 import InfoSection from '@/components/InfoSection.vue';
+import AboutSection from '@/components/AboutSection.vue';
 
 export default {
   name: "UserRegister",
   components: {
-    InfoSection
+    InfoSection,
+    AboutSection
   },
   data() {
     return {
-      nuevoUsuario: {
-        nombre: '',
-        correo: '',
+      newUser: {
+        name: '',
+        email: '',
         password: '',
-        edad: 0
+        age: 0
       },
-      mensajeError: ''
+      errorMessage: ''
     };
   },
   methods: {
-    async registrarUsuario() {
+    async registerUser() {
       const auth = getAuth();
 
       try {
         const userCredential = await createUserWithEmailAndPassword(
           auth,
-          this.nuevoUsuario.correo,
-          this.nuevoUsuario.password
+          this.newUser.email,
+          this.newUser.password
         );
         const user = userCredential.user;
 
-        await addDoc(collection(db, "usuarios"), {
+        await addDoc(collection(db, "users"), {
           uid: user.uid,
-          nombre: this.nuevoUsuario.nombre,
-          correo: this.nuevoUsuario.correo,
-          edad: this.nuevoUsuario.edad
+          name: this.newUser.name,
+          email: this.newUser.email,
+          age: this.newUser.age
         });
 
         this.$router.push('/login');
       } catch (error) {
-        this.mensajeError = "Error al registrar el usuario: " + error.message;
+        this.errorMessage = "Error registering user: " + error.message;
       }
     }
   }
@@ -103,8 +108,17 @@ export default {
 
 .text h2 {
   font-size: 64px;
-  color: #ffffff;
+  color: #3A49F9; /* Color del título */
   margin-bottom: 0;
+}
+
+.text h3 {
+  font-size: 60px;
+  background: linear-gradient(45deg, #9130F4, #4646F9);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  margin-top: 0;
 }
 
 .text p {
@@ -126,7 +140,18 @@ export default {
 }
 
 .register-form {
-  margin-top: 20px;
+  background-color: #ffffff; /* Fondo blanco para el formulario */
+  border-radius: 10px;
+  padding: 30px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  max-width: 400px;
+  margin: 20px auto;
+}
+
+.register-form h2 {
+  text-align: center;
+  color: #3A49F9;
+  margin-bottom: 20px;
 }
 
 .register-form label {
@@ -136,19 +161,25 @@ export default {
 
 .register-form input {
   width: 100%;
-  padding: 10px;
+  padding: 12px;
   margin-bottom: 15px;
   border: 1px solid #ccc;
   border-radius: 5px;
+  transition: border-color 0.3s;
+}
+
+.register-form input:focus {
+  border-color: #3A49F9; /* Color del borde en foco */
+  outline: none;
 }
 
 .custom-button {
   background: transparent;
   border: 2px solid;
-  border-image: linear-gradient(45deg, #12113933, #3A49F9) 1;
+  border-image: #3A49F9;
   padding: 15px 30px;
   font-size: 18px;
-  color: white;
+  color: #3A49F9;
   cursor: pointer;
   border-radius: 10px;
   margin-top: 10px;
@@ -156,8 +187,21 @@ export default {
 }
 
 .custom-button:hover {
-  background: linear-gradient(45deg, #12113933, #3A49F9);
+  background:#3A49F9;
   color: white;
 }
+
+.error {
+  color: red;
+  text-align: center;
+  margin-top: 10px;
+  padding: 10px;
+  border: 1px solid red;
+  border-radius: 5px;
+  background-color: rgba(255, 0, 0, 0.1); /* Fondo para mensajes de error */
+}
 </style>
+
+
+
 

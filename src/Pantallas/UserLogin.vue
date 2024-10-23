@@ -1,33 +1,35 @@
 <template>
-  <div>
+  <div class="login-page">
     <section class="pantalla">
       <div class="text">
-        <h2>Iniciar Sesión</h2>
-        <p>Ingresa tus credenciales para acceder a tu cuenta.</p>
+        <h2>Login</h2>
+        <p>Enter your credentials to access your account.</p>
       </div>
       <div class="form-container">
-        <form @submit.prevent="iniciarSesion">
-          <label>Correo:</label>
-          <input v-model="usuario.correo" type="email" required />
+        <form @submit.prevent="login">
+          <label>Email:</label>
+          <input v-model="user.email" type="email" required />
 
-          <label>Contraseña:</label>
-          <input v-model="usuario.password" type="password" required />
+          <label>Password:</label>
+          <input v-model="user.password" type="password" required />
 
-          <button type="submit">Iniciar Sesión</button>
+          <button type="submit" class="custom-button">Login</button>
         </form>
-        <p v-if="mensajeError" class="error">{{ mensajeError }}</p>
-        <p>¿No tienes una cuenta? <router-link to="/register">Regístrate aquí</router-link></p>
+        <p v-if="errorMessage" class="error">{{ errorMessage }}</p>
+        <p>
+          Don't have an account?
+          <router-link to="/register" class="register-link">Register here</router-link>
+        </p>
       </div>
     </section>
     <InfoSection 
-      title="Bienvenido a CardVersus"
-      description="Aquí puedes comparar y elegir la mejor tarjeta de crédito para tus necesidades."
+      title="Welcome to CardVersus"
+      description="Here you can compare and choose the best credit card for your needs."
     />
   </div>
 </template>
 
 <script>
-// Importa Firebase Auth
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import InfoSection from '@/components/InfoSection.vue';
 
@@ -38,29 +40,29 @@ export default {
   },
   data() {
     return {
-      usuario: {
-        correo: '',
+      user: {
+        email: '',
         password: ''
       },
-      mensajeError: ''
+      errorMessage: ''
     };
   },
   methods: {
-    async iniciarSesion() {
+    async login() {
       const auth = getAuth();
-      this.mensajeError = ''; // Reiniciar mensaje de error
+      this.errorMessage = ''; // Reset error message
 
       try {
         const userCredential = await signInWithEmailAndPassword(
           auth,
-          this.usuario.correo,
-          this.usuario.password
+          this.user.email,
+          this.user.password
         );
-        // Inicio de sesión exitoso
-        console.log('Usuario autenticado:', userCredential.user);
-        this.$router.push('/'); // Redirigir a la pantalla principal o dashboard
+        // Successful login
+        console.log('Authenticated user:', userCredential.user);
+        this.$router.push('/'); // Redirect to the main screen or dashboard
       } catch (error) {
-        this.mensajeError = "Error al iniciar sesión: " + error.message;
+        this.errorMessage = "Error logging in: " + error.message;
       }
     }
   }
@@ -68,40 +70,48 @@ export default {
 </script>
 
 <style scoped>
+.login-page {
+  background-color: #f0f4ff; /* Fondo claro que complementa los colores del MainScreen */
+  min-height: 100vh; /* Ocupa todo el alto de la pantalla */
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* Centra verticalmente */
+}
+
 .pantalla {
   display: flex;
   justify-content: space-between;
   align-items: center;
   width: 100%;
   max-width: 1200px;
-  margin: 80px auto;
+  margin: 40px auto; /* Ajuste del margen */
+  background-color: rgba(255, 255, 255, 0.9); /* Fondo blanco con opacidad */
+  border-radius: 10px;
+  padding: 40px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
 }
 
 .text {
   flex: 1;
   text-align: left;
-  margin-left: 100px;
+  margin-left: 20px; /* Menos margen para que se vea más limpio */
 }
 
 .text h2 {
-  font-size: 64px;
-  color: #ffffff;
-  margin-bottom: 0;
+  font-size: 48px;
+  color: #3A49F9; /* Color del título */
+  margin-bottom: 10px;
 }
 
 .text p {
-  font-size: 20px;
-  color: #e0e0e0;
+  font-size: 18px;
+  color: #4A4A4A; /* Color gris oscuro */
 }
 
 .form-container {
-  background-color: #f9f9f9;
-  border-radius: 10px;
-  padding: 20px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   flex: 1;
   max-width: 400px;
-  margin-right: 100px;
+  margin-right: 20px; /* Menos margen */
 }
 
 label {
@@ -111,13 +121,19 @@ label {
 
 input {
   width: 100%;
-  padding: 10px;
+  padding: 12px;
   margin-bottom: 20px;
   border: 1px solid #ccc;
   border-radius: 5px;
+  transition: border-color 0.3s;
 }
 
-button {
+input:focus {
+  border-color: #3A49F9; /* Color del borde en foco */
+  outline: none;
+}
+
+.custom-button {
   width: 100%;
   padding: 10px;
   background-color: #3A49F9;
@@ -128,7 +144,7 @@ button {
   transition: background-color 0.3s;
 }
 
-button:hover {
+.custom-button:hover {
   background-color: #2c3e50;
 }
 
@@ -138,9 +154,11 @@ button:hover {
   margin-top: 10px;
 }
 
-p {
-  text-align: center;
-  margin-top: 10px;
-  color: #555;
+.register-link {
+  color: #3A49F9; /* Mismo color que el título */
+  text-decoration: underline; /* Subrayar el enlace */
 }
 </style>
+
+
+
