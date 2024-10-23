@@ -29,8 +29,8 @@
     cursor: pointer;
     position: relative;
     transition: background 0.3s ease, color 0.3s ease;
-    display: block; /* Hace que el router-link actúe como un bloque completo */
-    text-decoration: none; /* Eliminar el subrayado del enlace */
+    display: block; 
+    text-decoration: none;
   }
   
   .column:hover {
@@ -51,14 +51,13 @@
   .description {
     font-size: 18px;
     color: #333;
-    text-decoration: none; /* Asegura que el texto no tenga subrayado */
+    text-decoration: none; 
   }
   
   .column:hover .description {
     color: white;
   }
   
-  /* Estilos para la imagen de la flecha */
   .arrow-icon {
     position: absolute;
     bottom: 10px;

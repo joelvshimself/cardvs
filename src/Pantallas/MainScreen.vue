@@ -36,8 +36,6 @@
     }
   };
   </script>
-  
-  <!-- Sin scoped -->
   <style>
   .pantalla {
     display: flex;

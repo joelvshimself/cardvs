@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <FixedHeader />  <!-- Barra fija -->
+    <FixedHeader />  <!-- Barra de arriba que siempre va a estar  -->
     <router-view />   <!-- Aquí se mostrarán las pantallas según la ruta -->
     <FooterSection /> <!-- Footer que siempre estará presente -->
   </div>
@@ -34,6 +34,6 @@ html, body {
   margin: 0;
   padding: 0;
   height: 100vh;
-  background-color: #121139; /* Fondo oscuro en todas las pantallas */
+  background-color: #121139;
 }
 </style>

@@ -22,8 +22,6 @@
     }
   };
   </script>
-  
-  <!-- Estilos -->
   <style scoped>
   .info-section {
     width: 100%;
