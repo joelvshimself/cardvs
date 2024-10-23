@@ -2,7 +2,7 @@
   <div class="login-page">
     <section class="pantalla">
       <div class="text">
-        <h2>Login</h2>
+        <h2>Log in here</h2>
         <p>Enter your credentials to access your account.</p>
       </div>
       <div class="form-container">
@@ -72,7 +72,7 @@ export default {
 <style scoped>
 .login-page {
   background-color: #f0f4ff; /* Fondo claro que complementa los colores del MainScreen */
-  min-height: 100vh; /* Ocupa todo el alto de la pantalla */
+  min-height: 115vh; /* Ocupa todo el alto de la pantalla */
   display: flex;
   flex-direction: column;
   justify-content: center; /* Centra verticalmente */
