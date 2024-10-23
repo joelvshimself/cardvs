@@ -185,7 +185,7 @@ input:focus {
 
 /* Estilos del botón de Google */
 .google-button {
-  background-color: #db4437;
+  background-color: #9130F4;
   color: white;
   padding: 12px 20px;
   border: none;
@@ -199,7 +199,7 @@ input:focus {
 }
 
 .google-button:hover {
-  background-color: #c5382f;
+  background-color: #3A49F9;
 }
 
 .google-logo {
