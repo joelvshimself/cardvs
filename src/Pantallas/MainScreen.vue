@@ -1,5 +1,7 @@
 <template>
-    <div>
+  <div>
+    <!-- Show Main Content if showQuiz is false -->
+    <div v-if="!showQuiz">
       <section class="pantalla">
         <div class="text">
           <h2>Find Your Perfect</h2>
@@ -17,83 +19,99 @@
       />
       <AboutSection />
     </div>
-  </template>
-  
-  <script>
+
+    <!-- Show Quiz when showQuiz is true -->
+    <div v-if="showQuiz">
+      <Quiz /> <!-- The quiz component is displayed here -->
+    </div>
+  </div>
+</template>
+
+<script>
   import InfoSection from '@/components/InfoSection.vue';
   import AboutSection from '@/components/AboutSection.vue';
-  
+  import Quiz from '@/Pantallas/QuizScreen.vue';  
+
   export default {
     name: 'MainScreen',
     components: {
       InfoSection,
       AboutSection,
+      Quiz,
+    },
+    data() {
+      return {
+        showQuiz: false, 
+      };
     },
     methods: {
       takeQuiz() {
         console.log('Quiz clicked!');
-      }
-    }
+        this.showQuiz = true; // Show the quiz
+      },
+    },
   };
-  </script>
-  <style>
-  .pantalla {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-    max-width: 1200px;
-    margin: 80px auto;
-  }
-  
-  .text {
-    flex: 1;
-    text-align: left;
-    margin-left: 100px;
-  }
-  
-  .text h2 {
-    font-size: 64px;
-    color: #ffffff;
-    margin-bottom: 0;
-  }
-  
-  .text h3 {
-    font-size: 60px;
-    background: linear-gradient(45deg, #9130F4, #4646F9);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-    margin-top: 0;
-  }
-  
-  .text p {
-    font-size: 20px;
-    color: #e0e0e0;
-  }
-  
-  .custom-button {
-    background: transparent;
-    border: 2px solid;
-    border-image: linear-gradient(45deg, #12113933, #3A49F9) 1;
-    padding: 15px 30px;
-    font-size: 18px;
-    color: white;
-    cursor: pointer;
-    border-radius: 10px;
-    margin-top: 10px;
-    transition: all 0.3s ease;
-  }
-  
-  .custom-button:hover {
-    background: linear-gradient(45deg, #12113933, #3A49F9);
-    color: white;
-  }
-  
-  .credit-card-img {
-    max-width: 100%;
-    height: auto;
-    border-radius: 15px;
-  }
-  </style>
+</script>
+
+<style scoped>
+.pantalla {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  max-width: 1200px;
+  margin: 80px auto;
+}
+
+.text {
+  flex: 1;
+  text-align: left;
+  margin-left: 100px;
+}
+
+.text h2 {
+  font-size: 64px;
+  color: #ffffff;
+  margin-bottom: 0;
+}
+
+.text h3 {
+  font-size: 60px;
+  background: linear-gradient(45deg, #9130F4, #4646F9);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  margin-top: 0;
+}
+
+.text p {
+  font-size: 20px;
+  color: #e0e0e0;
+}
+
+.custom-button {
+  background: transparent;
+  border: 2px solid;
+  border-image: linear-gradient(45deg, #12113933, #3A49F9) 1;
+  padding: 15px 30px;
+  font-size: 18px;
+  color: white;
+  cursor: pointer;
+  border-radius: 10px;
+  margin-top: 10px;
+  transition: all 0.3s ease;
+}
+
+.custom-button:hover {
+  background: linear-gradient(45deg, #12113933, #3A49F9);
+  color: white;
+}
+
+.credit-card-img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 15px;
+}
+</style>
+
   
