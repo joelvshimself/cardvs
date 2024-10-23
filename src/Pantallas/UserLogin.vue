@@ -26,6 +26,7 @@
       title="Welcome to CardVersus"
       description="Here you can compare and choose the best credit card for your needs."
     />
+    
   </div>
 </template>
 

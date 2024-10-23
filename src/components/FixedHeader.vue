@@ -8,8 +8,7 @@
           <li><router-link to="/news">News</router-link></li>
           <li><router-link to="/chatbot">Chatbot</router-link></li>
           <li><router-link to="/profile">Profile</router-link></li>
-          <li><router-link to="/register">Register</router-link></li>
-          <li><router-link to="/login">Login</router-link></li>
+          <li><router-link to="/login">Login/Register</router-link></li>
         </ul>
       </nav>
     </header>
