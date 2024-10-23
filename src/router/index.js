@@ -4,6 +4,8 @@ import CardCatalog from '@/Pantallas/CardCatalog.vue';
 import ChatbotScreen from '@/Pantallas/ChatbotScreen.vue'; 
 import NewsScreen from '@/Pantallas/NewsScreen.vue'; 
 import ProfileScreen from '@/Pantallas/PerfilScreen.vue';
+import UserRegister from '@/Pantallas/UserRegister.vue';
+import UserLogin from '@/Pantallas/UserLogin.vue';
 
 const routes = [
   {
@@ -30,6 +32,16 @@ const routes = [
     path: '/profile',
     name: 'ProfileScreen',
     component: ProfileScreen
+  },
+  {
+    path: '/register', // Nueva ruta actualizada
+    name: 'UserRegister',
+    component: UserRegister
+  },
+  {
+    path: '/login', // Nueva ruta actualizada
+    name: 'UserLogin',
+    component: UserLogin
   }
 ];
 
@@ -39,3 +51,4 @@ const router = createRouter({
 });
 
 export default router;
+
