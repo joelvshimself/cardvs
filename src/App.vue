@@ -1,26 +1,39 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <div id="app">
+    <FixedHeader />  <!-- Barra fija -->
+    <router-view />   <!-- Aquí se mostrarán las pantallas según la ruta -->
+    <FooterSection /> <!-- Footer que siempre estará presente -->
+  </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import FixedHeader from './components/FixedHeader.vue';
+import FooterSection from './components/FooterSection.vue';
 
 export default {
   name: 'App',
   components: {
-    HelloWorld
+    FixedHeader,
+    FooterSection
   }
-}
+};
 </script>
 
 <style>
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  overflow-x: hidden;
+  box-sizing: border-box;
+}
+
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+  width: 100vw;
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  background-color: #121139; /* Fondo oscuro en todas las pantallas */
 }
 </style>
