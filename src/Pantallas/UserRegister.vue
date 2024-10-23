@@ -31,15 +31,21 @@
       <input v-model="newUser.age" type="number" required />
 
       <button type="submit" class="custom-button">Register</button>
+
       <p v-if="errorMessage" class="error">{{ errorMessage }}</p>
     </form>
+
+    <button @click="registerWithGoogle" class="google-button">
+      <img src="@/assets/google_logo.png" alt="Google Logo" class="google-logo" />
+      <span>Register with Google</span>
+    </button>
 
     <AboutSection />
   </div>
 </template>
 
 <script>
-import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import { getAuth, createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { collection, addDoc } from "firebase/firestore";
 import { db } from "@/firebase";
 import InfoSection from '@/components/InfoSection.vue';
@@ -84,6 +90,26 @@ export default {
         this.$router.push('/login');
       } catch (error) {
         this.errorMessage = "Error registering user: " + error.message;
+      }
+    },
+    async registerWithGoogle() {
+      const auth = getAuth();
+      const provider = new GoogleAuthProvider();
+
+      try {
+        const result = await signInWithPopup(auth, provider);
+        const user = result.user;
+
+        // Guarda los datos del usuario en Firestore
+        await addDoc(collection(db, "users"), {
+          uid: user.uid,
+          name: user.displayName,
+          email: user.email
+        });
+
+        this.$router.push('/login');
+      } catch (error) {
+        this.errorMessage = "Error with Google registration: " + error.message;
       }
     }
   }
@@ -189,6 +215,35 @@ export default {
 .custom-button:hover {
   background:#3A49F9;
   color: white;
+}
+
+.google-button {
+  background-color: #9130F4;
+  color: white;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 5px;
+  margin: 20px auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.google-button:hover {
+  background-color: #3A49F9;
+}
+
+.google-logo {
+  width: 20px;
+  height: 20px;
+  margin-right: 10px;
+}
+
+.google-button span {
+  font-size: 16px;
+  font-weight: bold;
 }
 
 .error {

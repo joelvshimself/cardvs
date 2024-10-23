@@ -16,22 +16,29 @@
           <button type="submit" class="custom-button">Login</button>
         </form>
         <p v-if="errorMessage" class="error">{{ errorMessage }}</p>
+        
+        <!-- Botón para iniciar sesión con Google -->
+        <button @click="loginWithGoogle" class="google-button">
+          <img src="@/assets/google_logo.png" alt="Google Logo" class="google-logo" />
+          <span>Log in with Google</span>
+        </button>
+        
         <p>
           Don't have an account?
           <router-link to="/register" class="register-link">Register here</router-link>
         </p>
       </div>
     </section>
+    
     <InfoSection 
       title="Welcome to CardVersus"
       description="Here you can compare and choose the best credit card for your needs."
     />
-    
   </div>
 </template>
 
 <script>
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import { getAuth, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import InfoSection from '@/components/InfoSection.vue';
 
 export default {
@@ -65,6 +72,22 @@ export default {
       } catch (error) {
         this.errorMessage = "Error logging in: " + error.message;
       }
+    },
+    async loginWithGoogle() {
+      const auth = getAuth();
+      const provider = new GoogleAuthProvider();
+      this.errorMessage = ''; // Reset error message
+
+      try {
+        const result = await signInWithPopup(auth, provider);
+        const user = result.user;
+
+        // Successful Google login
+        console.log('Logged in with Google:', user);
+        this.$router.push('/'); // Redirect to the main screen or dashboard
+      } catch (error) {
+        this.errorMessage = "Error logging in with Google: " + error.message;
+      }
     }
   }
 };
@@ -73,7 +96,7 @@ export default {
 <style scoped>
 .login-page {
   background-color: #f0f4ff; /* Fondo claro que complementa los colores del MainScreen */
-  min-height: 115vh; /* Ocupa todo el alto de la pantalla */
+  min-height: 125vh; /* Ocupa todo el alto de la pantalla */
   display: flex;
   flex-direction: column;
   justify-content: center; /* Centra verticalmente */
@@ -159,7 +182,38 @@ input:focus {
   color: #3A49F9; /* Mismo color que el título */
   text-decoration: underline; /* Subrayar el enlace */
 }
+
+/* Estilos del botón de Google */
+.google-button {
+  background-color: #db4437;
+  color: white;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 5px;
+  margin: 20px auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.google-button:hover {
+  background-color: #c5382f;
+}
+
+.google-logo {
+  width: 20px;
+  height: 20px;
+  margin-right: 10px;
+}
+
+.google-button span {
+  font-size: 16px;
+  font-weight: bold;
+}
 </style>
+
 
 
 
