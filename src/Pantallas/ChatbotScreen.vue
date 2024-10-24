@@ -1,7 +1,7 @@
 <template>
-  <div class="chat-container">
+  <div v-if="isLoggedIn" class="chat-container">
     <header class="top-bar"> <!-- Barra superior fija -->
-      <h1>-</h1>
+      <h1>Chat</h1>
     </header>
     
     <div class="chat-messages-container">
@@ -19,15 +19,32 @@
       </button>
     </div>
   </div>
+  <div v-else>
+    <p>Por favor, inicia sesión para acceder al chat.</p>
+  </div>
 </template>
 
 <script>
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+
 export default {
   data() {
     return {
       question: '',
-      chatHistory: [] // Para almacenar el historial de chat
+      chatHistory: [],
+      isLoggedIn: false // Estado para verificar si el usuario está logueado
     };
+  },
+  created() {
+    const auth = getAuth();
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        this.isLoggedIn = true; // Usuario autenticado
+      } else {
+        this.isLoggedIn = false; // Usuario no autenticado, redirigir a login
+        this.$router.push('/login');
+      }
+    });
   },
   mounted() {
     this.scrollToBottom();
@@ -38,7 +55,9 @@ export default {
   methods: {
     scrollToBottom() {
       const chatMessages = this.$refs.chatMessages;
-      chatMessages.scrollTop = chatMessages.scrollHeight;
+      if (chatMessages) {
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+      }
     },
     async sendQuestion() {
       if (this.question.trim() === '') return;
@@ -87,8 +106,8 @@ export default {
 
 /* Contenedor de mensajes, que será el área scrolleable */
 .chat-messages-container {
-  flex-grow: 1; /* Permitir que este contenedor ocupe el espacio disponible */
-  overflow-y: auto; /* Habilitar scroll en este contenedor */
+  flex-grow: 1;
+  overflow-y: auto;
   padding: 20px;
   display: flex;
   flex-direction: column;
@@ -162,3 +181,4 @@ export default {
   font-size: 24px;
 }
 </style>
+
