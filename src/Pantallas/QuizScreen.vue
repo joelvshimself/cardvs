@@ -84,6 +84,44 @@
         showLoginPrompt: false,
         quizzes: [
           {
+            question: "What type of credit card are you looking for?",
+            options: [
+              { icon: "👤", text: "Personal" },
+              { icon: "💼", text: "Business" },
+              { icon: "❓", text: "Not sure" }
+            ]
+          },
+          {
+            question: "Are you comfortable with having an annual fee on your credit card?",
+            options: [
+              { icon: "✅", text: "Yes, I don’t mind paying an annual fee" },
+              { icon: "❌", text: "No, I prefer no annual fee" },
+              { icon: "⚖️", text: "Depends on the rewards" }
+            ]
+          },
+          {
+            question: "Do you plan to use your card internationally or care about foreign transaction fees?",
+            options: [
+              { icon: "🌍", text: "Yes, I want no foreign transaction fees" },
+              { icon: "✈️", text: "No, I don’t use my card internationally" }
+            ]
+          },
+          {
+            question: "How important is a signup bonus to you?",
+            options: [
+              { icon: "🎁", text: "Very important" },
+              { icon: "📈", text: "Somewhat important" },
+              { icon: "🚫", text: "Not important" }
+            ]
+          },
+          {
+            question: "Would you prefer a card that waives the annual fee for the first year?",
+            options: [
+              { icon: "✅", text: "Yes, I want the first-year fee waived" },
+              { icon: "❌", text: "No, I don’t mind paying the fee right away" }
+            ]
+          },
+          {
             question: "How would you like to redeem your rewards?",
             options: [
               { icon: "💰", text: "Cash Back" },
@@ -133,8 +171,8 @@
             question: "Estimate how much you spend monthly.",
             description: "Many cards give big rewards bonuses based on how you spend. Include only spending you would put on a credit card.",
             spendingCategories: [
-              { label: "Apple", amount: 0 },
-              { label: "Apple Pay", amount: 0 },
+              { label: "Online Shopping", amount: 0 },
+              { label: "Traveling", amount: 0 },
               { label: "Grocery Stores", amount: 0 },
               { label: "Restaurants", amount: 0 },
               { label: "Gas Stations", amount: 0 },
