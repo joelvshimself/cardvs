@@ -200,12 +200,6 @@
           setTimeout(() => {
             this.showLoginPrompt = false;
           }, 1000);
-        } else {
-          this.loginMessage = "Please log in to save your answers!";
-          this.showLoginPrompt = true;
-          setTimeout(() => {
-            this.showLoginPrompt = false;
-          }, 1000);
         }
       }
     }
