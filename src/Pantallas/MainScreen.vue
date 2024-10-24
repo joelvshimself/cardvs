@@ -28,6 +28,7 @@
 </template>
 
 <script>
+  import { getAuth } from "firebase/auth";
   import InfoSection from '@/components/InfoSection.vue';
   import AboutSection from '@/components/AboutSection.vue';
   import Quiz from '@/Pantallas/QuizScreen.vue';  
@@ -42,12 +43,27 @@
     data() {
       return {
         showQuiz: false, 
+        isLoggedIn: false,
       };
+    },
+    mounted() {
+      const auth = getAuth();
+      const user = auth.currentUser;
+
+      if (user) {
+        this.isLoggedIn = true;
+      } else {
+        this.isLoggedIn = false;
+      }
     },
     methods: {
       takeQuiz() {
-        console.log('Quiz clicked!');
-        this.showQuiz = true; // Show the quiz
+        if (this.isLoggedIn) {
+          console.log('Quiz clicked!');
+          this.showQuiz = true;
+        } else {
+          alert("You must be logged in to take the quiz!");
+        }
       },
     },
   };

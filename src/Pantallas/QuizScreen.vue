@@ -69,9 +69,10 @@
   </template>
   
   <script>
+
   import { setDoc, doc } from "firebase/firestore";
   import { getAuth } from "firebase/auth";
-  import { db } from "@/firebase"; // Your firebase config
+  import { db } from "@/firebase"; // Firebase config
   
   export default {
     data() {
@@ -177,10 +178,9 @@
       },
       async submitQuiz() {
         const auth = getAuth();
-        const user = auth.currentUser;
+        const user = auth.currentUser; 
   
         if (user) {
-          this.loginMessage = "Thank you for completing the quiz!";
           this.showLoginPrompt = true;
   
           try {
@@ -191,16 +191,12 @@
               timestamp: new Date(),
               userId: userId
             });
-            alert("Quiz answers saved successfully!");
+            alert("Quiz answers saved successfully! Thank you for completing the quiz!");
+            window.location.href = "/";
+
           } catch (error) {
             console.error("Error saving quiz answers: ", error);
           }
-          setTimeout(() => {
-            this.showLoginPrompt = false;
-          }, 1000);
-        } else {
-          this.loginMessage = "Please log in to save your answers!";
-          this.showLoginPrompt = true;
           setTimeout(() => {
             this.showLoginPrompt = false;
           }, 1000);
@@ -372,18 +368,5 @@
   
   .back-button:hover {
     background-color: gray;
-  }
-  
-  .login-prompt {
-    position: fixed;
-    bottom: 20px;
-    background-color: #f44336;
-    color: white;
-    padding: 15px 30px;
-    border-radius: 5px;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-    text-align: center;
-    z-index: 1000; 
-    animation: fade-out 1s forwards;
   }
   </style>
