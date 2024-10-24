@@ -5,16 +5,22 @@
         description="Browse through a vast collection of available credit cards. Explore cashback rewards, travel perks, and interest rates to find the card that best matches your needs."
         class="spaced-section" 
       />
+      <CardComparison />
+    <CardList />
     </div>
   </template>
   
   <script>
   import InfoSection from '@/components/InfoSection.vue';
+  import CardList from '@/components/CardList.vue';
+  import CardComparison from '@/components/CardComparison.vue';
   
   export default {
     name: 'CardCatalogScreen',
     components: {
-      InfoSection
+      InfoSection,
+      CardList,
+      CardComparison,
     }
   };
   </script>
