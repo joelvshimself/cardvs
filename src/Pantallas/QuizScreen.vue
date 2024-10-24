@@ -26,7 +26,7 @@
                   style="display: none;" 
                 />
                 <span>{{ option.icon }} {{ option.text }}</span>
-                <p v-if="option.subtext" class="option-subtext">{{ option.subtext }}</p> <!-- Subtext below option -->
+                <p v-if="option.subtext" class="option-subtext">{{ option.subtext }}</p>
               </label>
             </div>
           </div>
