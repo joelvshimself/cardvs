@@ -5,6 +5,8 @@
       title="Card Comparador" 
       description="Need help choosing the best credit card? Our Comparador can guide you through the options based on your unique preferences. Get personalized recommendations instantly."
     />
+    <CardComparison />
+    <CardList />
   </div>
   <div v-else>
     <p>Please log in to access the Card Comparador.</p>
@@ -14,11 +16,15 @@
 <script>
 import InfoSection from '@/components/InfoSection.vue';
 import { getAuth, onAuthStateChanged } from "firebase/auth";
+import CardList from '@/components/CardList.vue';
+import CardComparison from '@/components/CardComparison.vue';
 
 export default {
   name: 'CardComparador',
   components: {
-    InfoSection
+    InfoSection,
+    CardList,
+    CardComparison,
   },
   data() {
     return {
