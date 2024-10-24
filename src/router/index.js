@@ -6,6 +6,7 @@ import NewsScreen from '@/Pantallas/NewsScreen.vue';
 import ProfileScreen from '@/Pantallas/PerfilScreen.vue';
 import UserRegister from '@/Pantallas/UserRegister.vue';
 import UserLogin from '@/Pantallas/UserLogin.vue';
+import CardComparador from '@/Pantallas/CardComparador.vue';
 
 const routes = [
   {
@@ -42,6 +43,11 @@ const routes = [
     path: '/login', // Nueva ruta actualizada
     name: 'UserLogin',
     component: UserLogin
+  },
+  {
+    path: '/cardcomparador', // Nueva ruta actualizada
+    name: 'CardComparador',
+    component: CardComparador
   }
 ];
 

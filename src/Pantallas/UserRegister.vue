@@ -45,11 +45,12 @@
 </template>
 
 <script>
-import { getAuth, createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
-import { collection, addDoc } from "firebase/firestore";
-import { db } from "@/firebase";
 import InfoSection from '@/components/InfoSection.vue';
 import AboutSection from '@/components/AboutSection.vue';
+
+import { getAuth, createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, updateProfile } from "firebase/auth";
+import { collection, addDoc } from "firebase/firestore";
+import { db } from "@/firebase";
 
 export default {
   name: "UserRegister",
@@ -73,6 +74,7 @@ export default {
       const auth = getAuth();
 
       try {
+        // Crear el usuario con email y password
         const userCredential = await createUserWithEmailAndPassword(
           auth,
           this.newUser.email,
@@ -80,6 +82,12 @@ export default {
         );
         const user = userCredential.user;
 
+        // Actualizar el displayName en Firebase Authentication
+        await updateProfile(user, {
+          displayName: this.newUser.name
+        });
+
+        // Guardar el usuario en Firestore
         await addDoc(collection(db, "users"), {
           uid: user.uid,
           name: this.newUser.name,
@@ -87,7 +95,8 @@ export default {
           age: this.newUser.age
         });
 
-        this.$router.push('/login');
+        // Redirigir a la página de login
+        this.$router.push('/profile');
       } catch (error) {
         this.errorMessage = "Error registering user: " + error.message;
       }
