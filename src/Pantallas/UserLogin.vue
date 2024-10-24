@@ -58,7 +58,7 @@ export default {
   methods: {
     async login() {
       const auth = getAuth();
-      this.errorMessage = ''; // Reset error message
+      this.errorMessage = ''; 
 
       try {
         const userCredential = await signInWithEmailAndPassword(
@@ -68,7 +68,7 @@ export default {
         );
         // Successful login
         console.log('Authenticated user:', userCredential.user);
-        this.$router.push('/'); // Redirect to the main screen or dashboard
+        this.$router.push('/'); 
       } catch (error) {
         this.errorMessage = "Error logging in: " + error.message;
       }
@@ -76,7 +76,7 @@ export default {
     async loginWithGoogle() {
       const auth = getAuth();
       const provider = new GoogleAuthProvider();
-      this.errorMessage = ''; // Reset error message
+      this.errorMessage = ''; 
 
       try {
         const result = await signInWithPopup(auth, provider);
@@ -84,7 +84,7 @@ export default {
 
         // Successful Google login
         console.log('Logged in with Google:', user);
-        this.$router.push('/'); // Redirect to the main screen or dashboard
+        this.$router.push('/'); 
       } catch (error) {
         this.errorMessage = "Error logging in with Google: " + error.message;
       }
@@ -95,11 +95,11 @@ export default {
 
 <style scoped>
 .login-page {
-  background-color: #f0f4ff; /* Fondo claro que complementa los colores del MainScreen */
-  min-height: 125vh; /* Ocupa todo el alto de la pantalla */
+  background-color: #f0f4ff; 
+  min-height: 125vh; 
   display: flex;
   flex-direction: column;
-  justify-content: center; /* Centra verticalmente */
+  justify-content: center; 
 }
 
 .pantalla {
@@ -108,8 +108,8 @@ export default {
   align-items: center;
   width: 100%;
   max-width: 1200px;
-  margin: 40px auto; /* Ajuste del margen */
-  background-color: rgba(255, 255, 255, 0.9); /* Fondo blanco con opacidad */
+  margin: 40px auto; 
+  background-color: rgba(255, 255, 255, 0.9); 
   border-radius: 10px;
   padding: 40px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
@@ -118,24 +118,24 @@ export default {
 .text {
   flex: 1;
   text-align: left;
-  margin-left: 20px; /* Menos margen para que se vea más limpio */
+  margin-left: 20px; 
 }
 
 .text h2 {
   font-size: 48px;
-  color: #3A49F9; /* Color del título */
+  color: #3A49F9; 
   margin-bottom: 10px;
 }
 
 .text p {
   font-size: 18px;
-  color: #4A4A4A; /* Color gris oscuro */
+  color: #4A4A4A; 
 }
 
 .form-container {
   flex: 1;
   max-width: 400px;
-  margin-right: 20px; /* Menos margen */
+  margin-right: 20px; 
 }
 
 label {
@@ -179,11 +179,10 @@ input:focus {
 }
 
 .register-link {
-  color: #3A49F9; /* Mismo color que el título */
-  text-decoration: underline; /* Subrayar el enlace */
+  color: #3A49F9; 
+  text-decoration: underline; 
 }
 
-/* Estilos del botón de Google */
 .google-button {
   background-color: #9130F4;
   color: white;
