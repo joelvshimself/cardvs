@@ -97,6 +97,7 @@
                 </div>
               </td>
             </tr>
+            <!-- Add more detailed rows as needed -->
           </tbody>
         </table>
         <button @click="clearComparison" class="clear-comparison-button">Clear Comparison</button>
@@ -106,7 +107,7 @@
   
   <script>
   import { mapGetters, mapActions } from 'vuex';
-  
+
   export default {
     name: 'CardComparison',
     computed: {
@@ -117,7 +118,7 @@
     },
     data() {
       return {
-        showDetails: true, // State variable to toggle details
+        showDetails: true, // Estado para alternar detalles
       };
     },
     methods: {
@@ -127,73 +128,80 @@
       },
     },
   };
-  </script>
-  
-  <style scoped>
-  .comparison-container {
-    margin: 20px 0;
-    overflow-x: auto; /* Allows horizontal scrolling on smaller screens */
-  }
-  
+</script>
+<style scoped>
+.comparison-container {
+  margin: 0;
+  padding: 20px;
+  background-color: #121139;
+  border-radius: 1px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  color: white;
+}
+
+.comparison-table {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid #ddd;
+}
+
+.attribute {
+  font-weight: bold;
+  color: #f5f5f5; /* Morado claro */
+  flex-basis: 20%;
+  text-align: left;
+}
+
+.card-info {
+  flex-basis: 25%;
+  text-align: center;
+  background-color: rgba(255, 255, 255, 0.15);
+  padding: 10px;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.card-name {
+  font-size: 1.2em;
+  font-weight: bold;
+  color: #ffffff;
+}
+
+.clear-comparison-button {
+  padding: 10px 20px;
+  cursor: pointer;
+  background-color: #ff4d4d;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  margin-top: 20px;
+}
+
+.clear-comparison-button:hover {
+  background-color: #e60000;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
   .comparison-table {
-    width: 100%;
-    border-collapse: collapse;
-    table-layout: auto; /* Allows columns to size based on content */
+    display: block;
   }
-  
-  .comparison-table th,
-  .comparison-table td {
-    border: 1px solid #ddd;
-    padding: 12px;
-    text-align: center;
+
+  .row {
+    flex-direction: column;
   }
-  
-  .comparison-table th:first-child,
-  .comparison-table td:first-child {
-    white-space: nowrap; /* Prevents text from wrapping */
-    width: 150px; /* Adjust this value as needed to fit the longest attribute */
-    background-color: #f4f4f4;
-  }
-  
-  .toggle-details-button {
-    padding: 8px 16px;
-    cursor: pointer;
-    background-color: #42b983;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    margin-bottom: 10px; /* Space between button and table */
-  }
-  
-  .toggle-details-button:hover {
-    background-color: #369870;
-  }
-  
+
   .clear-comparison-button {
-    padding: 8px 16px;
-    cursor: pointer;
-    background-color: #ff4d4d;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    margin-top: 10px; /* Space between table and button */
+    width: 100%;
+    box-sizing: border-box;
   }
-  
-  .clear-comparison-button:hover {
-    background-color: #e60000;
-  }
-  
-  /* Responsive Design Enhancements */
-  @media (max-width: 768px) {
-    .comparison-table th,
-    .comparison-table td {
-      padding: 8px;
-    }
-  
-    .toggle-details-button,
-    .clear-comparison-button {
-      width: 100%;
-      box-sizing: border-box;
-    }
-  }
-  </style>
+}
+</style>

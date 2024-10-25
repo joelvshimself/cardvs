@@ -5,8 +5,8 @@
       title="Card Comparador" 
       description="Need help choosing the best credit card? Our Comparador can guide you through the options based on your unique preferences. Get personalized recommendations instantly."
     />
-    <CardComparison />
     <CardList />
+    <CardComparison />
   </div>
   <div v-else>
     <p>Please log in to access the Card Comparador.</p>
