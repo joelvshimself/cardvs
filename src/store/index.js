@@ -85,12 +85,20 @@ export default createStore({
     async fetchCardImage({ commit, state }, cardKey) {
       if (state.cardImages[cardKey]) return;
 
-      // Removed the HEAD request to avoid 404 errors in the console
-      const imageUrl = `https://rewards-credit-card-api.p.rapidapi.com/creditcard-card-image/${encodeURIComponent(
-        cardKey
-      )}`;
+      try {
+        const response = await throttledApiCall(`creditcard-card-image/${encodeURIComponent(cardKey)}`);
+        const imageData = response.data[0];
+        const imageUrl = imageData.cardImageUrl;
 
-      commit('SET_CARD_IMAGE', { cardKey, cardImageUrl: imageUrl });
+        if (imageUrl) {
+          commit('SET_CARD_IMAGE', { cardKey, cardImageUrl: imageUrl });
+        } else {
+          commit('SET_CARD_IMAGE', { cardKey, cardImageUrl: '/assets/placeholder_card.png' });
+        }
+      } catch (error) {
+        console.error(`Error fetching image for card ${cardKey}:`, error);
+        commit('SET_CARD_IMAGE', { cardKey, cardImageUrl: '/assets/placeholder_card.png' });
+      }
     },
     async addCardToComparison({ commit, state, dispatch }, cardKey) {
       if (!state.cardDetailsCache[cardKey]) {
