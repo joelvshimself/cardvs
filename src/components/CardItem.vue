@@ -93,13 +93,13 @@ button {
   margin-top: 10px;
   padding: 8px 12px;
   cursor: pointer;
-  background-color: #42b983;
+  background-color: #3A49F9;
   color: white;
   border: none;
   border-radius: 4px;
 }
 
 button:hover {
-  background-color: #369870;
+  background-color: #3A49F9;
 }
 </style>
