@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="news-page">
     <div class="spacer"></div>
     <InfoSection 
       title="News Updates" 
@@ -44,7 +44,7 @@ export default {
   },
   methods: {
     async fetchBankingNews() {
-      const apiKey = 'e68134e0c72b470aaf156ecb142e9fc7'; 
+      const apiKey = process.env.VUE_APP_NEWS_API_KEY; // Extraer API key desde .env.local
       const url = `https://newsapi.org/v2/top-headlines?category=business&apiKey=${apiKey}`;
 
       try {
@@ -77,6 +77,12 @@ export default {
 </script>
 
 <style scoped>
+/* Asegurarse de que todo el fondo de la página sea oscuro */
+.news-page {
+  background-color: #121139;
+  min-height: 100vh; /* Asegura que la página cubra toda la ventana */
+}
+
 .spacer {
   height: 50px;
 }
@@ -84,11 +90,13 @@ export default {
 /* Estilos para las noticias */
 .news-container {
   margin: 20px;
+  background-color: #121139; /* Fondo oscuro en la sección de noticias */
+  padding: 20px;
 }
 
 .news-list {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr); /* Mostrar 4 noticias por fila */
   gap: 20px;
 }
 
@@ -101,12 +109,12 @@ export default {
 }
 
 .news-item h2 {
-  font-size: 22px;
+  font-size: 18px;
   margin-bottom: 10px;
 }
 
 .news-item p {
-  font-size: 16px;
+  font-size: 14px;
   margin-bottom: 15px;
 }
 
@@ -119,10 +127,9 @@ export default {
   text-decoration: underline;
 }
 
-/* Estilos de la imagen de noticia */
 .news-image {
   width: 100%;
-  max-height: 300px;
+  max-height: 150px;
   object-fit: cover;
   border-radius: 10px;
   margin-bottom: 15px;
@@ -139,5 +146,3 @@ export default {
 }
 </style>
 
-
-  
