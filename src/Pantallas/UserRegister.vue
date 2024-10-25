@@ -74,7 +74,6 @@ export default {
       const auth = getAuth();
 
       try {
-        // Crear el usuario con email y password
         const userCredential = await createUserWithEmailAndPassword(
           auth,
           this.newUser.email,
@@ -82,12 +81,10 @@ export default {
         );
         const user = userCredential.user;
 
-        // Actualizar el displayName en Firebase Authentication
         await updateProfile(user, {
           displayName: this.newUser.name
         });
 
-        // Guardar el usuario en Firestore
         await addDoc(collection(db, "users"), {
           uid: user.uid,
           name: this.newUser.name,
@@ -95,7 +92,6 @@ export default {
           age: this.newUser.age
         });
 
-        // Redirigir a la página de login
         this.$router.push('/profile');
       } catch (error) {
         this.errorMessage = "Error registering user: " + error.message;

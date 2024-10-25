@@ -14,7 +14,7 @@
   export default {
     name: 'CardCatalogScreen',
     components: {
-      InfoSection
+      InfoSection,
     }
   };
   </script>
