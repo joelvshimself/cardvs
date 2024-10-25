@@ -671,7 +671,6 @@
     background-color: #0056b3;
   }
   
-  /* Estilos adicionales para el mensaje de agradecimiento */
   .thank-you-message {
     text-align: center;
     margin-bottom: 20px;
