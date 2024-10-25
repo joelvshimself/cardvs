@@ -31,7 +31,7 @@
   import { getAuth } from "firebase/auth";
   import InfoSection from '@/components/InfoSection.vue';
   import AboutSection from '@/components/AboutSection.vue';
-  import Quiz from '@/Pantallas/QuizScreenC.vue';  
+  import Quiz from '@/Pantallas/QuizScreen.vue';  
 
   export default {
     name: 'MainScreen',
