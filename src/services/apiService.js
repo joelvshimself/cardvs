@@ -4,12 +4,11 @@ const apiBaseUrl = 'https://rewards-credit-card-api.p.rapidapi.com';
 const apiKey = process.env.VUE_APP_RAPIDAPI_KEY;
 const apiHost = process.env.VUE_APP_RAPIDAPI_HOST;
 
-// Request Queue
 const requestQueue = [];
 let isProcessing = false;
 
-// Delay between requests in milliseconds (adjust as per API rate limits)
-const REQUEST_DELAY = 4000;
+const REQUEST_DELAY = 350; // 350ms for 3 requests per second
+
 // Process the next request in the queue
 const processQueue = () => {
   if (requestQueue.length === 0) {
@@ -30,13 +29,16 @@ const processQueue = () => {
     ...params,
   })
     .then((response) => {
-      resolve(response.data);
+      resolve(response);
     })
     .catch((error) => {
-      console.error(`API Call Error (${endpoint}):`, error);
-      // If the error is due to rate limiting, you can implement retries here
-      reject(error);
-    })
+        if (error.response && error.response.status === 404) {
+          console.warn(`Resource not found (${endpoint}): 404 Not Found`);
+        } else {
+          console.error(`API Call Error (${endpoint}):`, error);
+        }
+        reject(error);
+      })
     .finally(() => {
       // Wait for REQUEST_DELAY before processing the next request
       setTimeout(() => {

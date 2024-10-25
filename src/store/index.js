@@ -1,12 +1,12 @@
 import { createStore } from 'vuex';
-import axios from 'axios';
+import { throttledApiCall } from '../services/apiService';
 
 export default createStore({
   state: {
-    cards: [], // List of all fetched cards
-    cardDetailsCache: {}, // Cache for card details
-    selectedCardsForComparison: [], // List of cardKeys selected for comparison
-    cardImages: {}, // Cache for card images
+    cards: [],
+    cardDetailsCache: {},
+    selectedCardsForComparison: [],
+    cardImages: {},
   },
   mutations: {
     SET_CARDS(state, cards) {
@@ -55,16 +55,8 @@ export default createStore({
     },
     async searchCards({ commit }, searchTerm) {
       try {
-        const response = await axios.get(
-          `https://rewards-credit-card-api.p.rapidapi.com/creditcard-detail-namesearch/${encodeURIComponent(
-            searchTerm
-          )}`,
-          {
-            headers: {
-              'x-rapidapi-key': process.env.VUE_APP_RAPIDAPI_KEY,
-              'x-rapidapi-host': process.env.VUE_APP_RAPIDAPI_HOST,
-            },
-          }
+        const response = await throttledApiCall(
+          `creditcard-detail-namesearch/${encodeURIComponent(searchTerm)}`
         );
 
         const cards = response.data;
@@ -75,24 +67,14 @@ export default createStore({
         }
 
         const detailedCardsPromises = cards.map((card) =>
-          axios.get(
-            `https://rewards-credit-card-api.p.rapidapi.com/creditcard-detail-bycard/${encodeURIComponent(
-              card.cardKey
-            )}`,
-            {
-              headers: {
-                'x-rapidapi-key': process.env.VUE_APP_RAPIDAPI_KEY,
-                'x-rapidapi-host': process.env.VUE_APP_RAPIDAPI_HOST,
-              },
-            }
-          )
+          throttledApiCall(`creditcard-detail-bycard/${encodeURIComponent(card.cardKey)}`)
         );
 
         const detailedCardsResults = await Promise.allSettled(detailedCardsPromises);
 
         const detailedCards = detailedCardsResults
           .filter((result) => result.status === 'fulfilled')
-          .map((result) => result.value.data[0]); // Assuming the API returns an array with one object
+          .map((result) => result.value.data[0]);
 
         commit('SET_CARDS', detailedCards);
       } catch (error) {
@@ -103,27 +85,22 @@ export default createStore({
     async fetchCardImage({ commit, state }, cardKey) {
       if (state.cardImages[cardKey]) return;
 
-      try {
-        const imageUrl = `https://rewards-credit-card-api.p.rapidapi.com/creditcard-card-image/${encodeURIComponent(
-          cardKey
-        )}`;
+      // Removed the HEAD request to avoid 404 errors in the console
+      const imageUrl = `https://rewards-credit-card-api.p.rapidapi.com/creditcard-card-image/${encodeURIComponent(
+        cardKey
+      )}`;
 
-        await axios.head(imageUrl);
-
-        commit('SET_CARD_IMAGE', { cardKey, cardImageUrl: imageUrl });
-        console.log(`Fetched image for ${cardKey}: ${imageUrl}`);
-      } catch (error) {
-        console.error(`Error fetching image for card ${cardKey}:`, error);
-        // Use a placeholder image from the public folder
-        commit('SET_CARD_IMAGE', { cardKey, cardImageUrl: '/assets/placeholder_card.png' });
-      }
+      commit('SET_CARD_IMAGE', { cardKey, cardImageUrl: imageUrl });
     },
     async addCardToComparison({ commit, state, dispatch }, cardKey) {
       if (!state.cardDetailsCache[cardKey]) {
         await dispatch('fetchCardDetail', cardKey);
       }
       commit('ADD_CARD_TO_COMPARISON', cardKey);
-      localStorage.setItem('selectedCardsForComparison', JSON.stringify(state.selectedCardsForComparison));
+      localStorage.setItem(
+        'selectedCardsForComparison',
+        JSON.stringify(state.selectedCardsForComparison)
+      );
     },
     async fetchCardDetail({ commit, state }, cardKey) {
       if (state.cardDetailsCache[cardKey]) {
@@ -131,16 +108,8 @@ export default createStore({
       }
 
       try {
-        const response = await axios.get(
-          `https://rewards-credit-card-api.p.rapidapi.com/creditcard-detail-bycard/${encodeURIComponent(
-            cardKey
-          )}`,
-          {
-            headers: {
-              'x-rapidapi-key': process.env.VUE_APP_RAPIDAPI_KEY,
-              'x-rapidapi-host': process.env.VUE_APP_RAPIDAPI_HOST,
-            },
-          }
+        const response = await throttledApiCall(
+          `creditcard-detail-bycard/${encodeURIComponent(cardKey)}`
         );
         const cardDetail = response.data[0];
         commit('CACHE_CARD_DETAIL', { cardKey, cardDetail });
@@ -152,7 +121,10 @@ export default createStore({
     },
     removeCardFromComparison({ commit, state }, cardKey) {
       commit('REMOVE_CARD_FROM_COMPARISON', cardKey);
-      localStorage.setItem('selectedCardsForComparison', JSON.stringify(state.selectedCardsForComparison));
+      localStorage.setItem(
+        'selectedCardsForComparison',
+        JSON.stringify(state.selectedCardsForComparison)
+      );
     },
     clearComparison({ commit }) {
       commit('CLEAR_COMPARISON');
