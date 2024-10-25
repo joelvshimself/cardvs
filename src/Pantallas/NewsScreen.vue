@@ -44,7 +44,7 @@ export default {
   },
   methods: {
     async fetchBankingNews() {
-      const apiKey = 'e68134e0c72b470aaf156ecb142e9fc7'; 
+      const apiKey = process.env.VUE_APP_NEWS_API_KEY; // Extraer API key desde .env.local
       const url = `https://newsapi.org/v2/top-headlines?category=business&apiKey=${apiKey}`;
 
       try {
@@ -145,3 +145,4 @@ export default {
   text-align: center;
 }
 </style>
+
