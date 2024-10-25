@@ -1,6 +1,8 @@
 <template>
     <div class="quiz-container">
-      <div class="quiz-box">
+      
+      <!-- Contenedor del Quiz (se muestra si no se ha enviado) -->
+      <div v-if="!quizSubmitted" class="quiz-box">
         <!-- Question and description -->
         <div class="quiz-left">
           <h2>{{ quizzes[currentQuestion].question }}</h2>
@@ -9,7 +11,7 @@
   
         <!-- Options and buttons -->
         <div class="quiz-right">
-          <!-- Options -->
+          <!-- Opciones -->
           <div v-if="quizzes[currentQuestion].options" class="options">
             <div
               v-for="(option, index) in quizzes[currentQuestion].options"
@@ -31,7 +33,7 @@
             </div>
           </div>
   
-          <!-- Spending Categories -->
+          <!-- Categorías de Gastos -->
           <div v-if="quizzes[currentQuestion].spendingCategories" class="spending-categories">
             <div v-for="(category, index) in quizzes[currentQuestion].spendingCategories" :key="index" class="category-box">
               <div class="category-header">
@@ -42,13 +44,13 @@
             </div>
           </div>
   
-          <!-- Total Monthly Credit Card Spending -->
+          <!-- Gasto Total Mensual en Tarjetas de Crédito -->
           <div v-if="currentQuestion === quizzes.length - 1" class="total-spending">
             <label>Total Monthly Credit Card Spending</label>
             <span>$ {{ totalSpend }}</span>
           </div>
   
-          <!-- Next and Go Back Buttons -->
+          <!-- Botones de Navegación -->
           <div class="button-container">
             <button v-if="currentQuestion > 0" @click="previousQuestion" class="back-button">
               &larr; Go Back
@@ -61,30 +63,37 @@
         </div>
       </div>
   
+      <!-- Mensaje de Agradecimiento y Tarjetas Recomendadas (se muestra después del envío) -->
+      <div v-else class="thank-you-and-recommendations">
+        <div class="thank-you-message">
+          <h2>Thank you for answering the quiz!</h2>
+        </div>
+        
+        <!-- Loading Spinner -->
+        <div v-if="isLoading" class="loading-spinner">
+          Loading your recommended card...
+        </div>
+        
+        <!-- Recommended Cards Section -->
+        <div v-if="!isLoading" class="recommended-cards" style="background: lightyellow; padding: 20px;">
+          <h2>We Recommend:</h2>
+          <div class="cards-container">
+            <div v-for="(card, index) in recommendedCards" :key="index" class="card">
+              <img :src="card.image" :alt="card.name" class="card-image" />
+              <h3>{{ card.name }}</h3>
+              <p>Issuer: {{ card.cardIssuer }}</p>
+              <p>Annual Fee: ${{ card.annualFee }}</p>
+              <a :href="card.cardUrl" target="_blank" class="learn-more">Learn More</a>
+            </div>
+          </div>
+        </div>
+      </div>
+  
       <!-- Notification for Login -->
       <div v-if="showLoginPrompt" class="login-prompt">
         <p>{{ loginMessage }}</p>
       </div>
   
-      <!-- Loading Spinner -->
-      <div v-if="isLoading" class="loading-spinner">
-        Loading your recommended card...
-      </div>
-  
-      <!-- Recommended Cards Section -->
-      <div class="recommended-cards" style="background: lightyellow; padding: 20px;">
-        <h2>We Recommend:</h2>
-        <div class="cards-container">
-            <div v-for="(card, index) in recommendedCards" :key="index" class="card">
-            <img :src="card.image" :alt="card.name" class="card-image" />
-            <h3>{{ card.name }}</h3>
-            <p>Issuer: {{ card.cardIssuer }}</p>
-            <p>Annual Fee: ${{ card.annualFee }}</p>
-            <a :href="card.cardUrl" target="_blank" class="learn-more">Learn More</a>
-            </div>
-        </div>
-      </div>
-
     </div>
   </template>
   
@@ -104,6 +113,7 @@
         showLoginPrompt: false,
         recommendedCards: [], // Almacenar las tarjetas recomendadas
         isLoading: false, // Manejar el estado de carga
+        quizSubmitted: false, // Nueva propiedad
         quizzes: [
           // Tus preguntas del quiz
           {
@@ -115,80 +125,80 @@
             ]
           },
           {
-           question: "Are you comfortable with having an annual fee on your credit card?",
-           options: [
-             { icon: "✅", text: "Yes, I don’t mind paying an annual fee" },
-             { icon: "❌", text: "No, I prefer no annual fee" },
-             { icon: "⚖️", text: "Depends on the rewards" }
-           ]
+            question: "Are you comfortable with having an annual fee on your credit card?",
+            options: [
+              { icon: "✅", text: "Yes, I don’t mind paying an annual fee" },
+              { icon: "❌", text: "No, I prefer no annual fee" },
+              { icon: "⚖️", text: "Depends on the rewards" }
+            ]
           },
           {
-           question: "Do you plan to use your card internationally or care about foreign transaction fees?",
-           options: [
-             { icon: "🌍", text: "Yes, I want no foreign transaction fees" },
-             { icon: "✈️", text: "No, I don’t use my card internationally" }
-           ]
+            question: "Do you plan to use your card internationally or care about foreign transaction fees?",
+            options: [
+              { icon: "🌍", text: "Yes, I want no foreign transaction fees" },
+              { icon: "✈️", text: "No, I don’t use my card internationally" }
+            ]
           },
           {
-           question: "How important is a signup bonus to you?",
-           options: [
-             { icon: "🎁", text: "Very important" },
-             { icon: "📈", text: "Somewhat important" },
-             { icon: "🚫", text: "Not important" }
-           ]
+            question: "How important is a signup bonus to you?",
+            options: [
+              { icon: "🎁", text: "Very important" },
+              { icon: "📈", text: "Somewhat important" },
+              { icon: "🚫", text: "Not important" }
+            ]
           },
           {
-           question: "Would you prefer a card that waives the annual fee for the first year?",
-           options: [
-             { icon: "✅", text: "Yes, I want the first-year fee waived" },
-             { icon: "❌", text: "No, I don’t mind paying the fee right away" }
-           ]
+            question: "Would you prefer a card that waives the annual fee for the first year?",
+            options: [
+              { icon: "✅", text: "Yes, I want the first-year fee waived" },
+              { icon: "❌", text: "No, I don’t mind paying the fee right away" }
+            ]
           },
           {
-           question: "How would you like to redeem your rewards?",
-           options: [
-             { icon: "💰", text: "Cash Back" },
-             { icon: "✈️", text: "Economy Airfare" },
-             { icon: "💼", text: "Business Airfare" },
-             { icon: "🏨", text: "Hotels" },
-             { icon: "❓", text: "I don't know" },
-           ],
+            question: "How would you like to redeem your rewards?",
+            options: [
+              { icon: "💰", text: "Cash Back" },
+              { icon: "✈️", text: "Economy Airfare" },
+              { icon: "💼", text: "Business Airfare" },
+              { icon: "🏨", text: "Hotels" },
+              { icon: "❓", text: "I don't know" },
+            ],
           },
           {
-           question: "What is your credit score?",
-           options: [
-             { icon: "💳", text: "Excellent", subtext: "770-850" },
-             { icon: "💳", text: "Good", subtext: "670-769" },
-             { icon: "💳", text: "Fair", subtext: "600-669" },
-             { icon: "💳", text: "Poor", subtext: "Under 600" },
-             { icon: "💳", text: "Limited", subtext: "Less than 1 year credit history" },
-             { icon: "❓", text: "I don't know" },
-           ],
+            question: "What is your credit score?",
+            options: [
+              { icon: "💳", text: "Excellent", subtext: "770-850" },
+              { icon: "💳", text: "Good", subtext: "670-769" },
+              { icon: "💳", text: "Fair", subtext: "600-669" },
+              { icon: "💳", text: "Poor", subtext: "Under 600" },
+              { icon: "💳", text: "Limited", subtext: "Less than 1 year credit history" },
+              { icon: "❓", text: "I don't know" },
+            ],
           },
           {
-           question: "Do any of the following apply to you?",
-           options: [
-             { icon: "💼", text: "I own a business", subtext: "And I'm open to a business credit card" },
-             { icon: "🎓", text: "I’m a student" },
-             { icon: "🚫", text: "None of the above" },
-           ],
+            question: "Do any of the following apply to you?",
+            options: [
+              { icon: "💼", text: "I own a business", subtext: "And I'm open to a business credit card" },
+              { icon: "🎓", text: "I’m a student" },
+              { icon: "🚫", text: "None of the above" },
+            ],
           },
           {
-           question: "Interested in pairing with your current cards?",
-           description: "By enabling pairing, we will find you a new card that complements your current cards to maximize total rewards.",
-           options: [
-             { icon: "✅", text: "Yes", subtext: "I’m open to pairing with my current cards to maximize total rewards" },
-             { icon: "❌", text: "No", subtext: "I will use one card for everything" },
-           ],
+            question: "Interested in pairing with your current cards?",
+            description: "By enabling pairing, we will find you a new card that complements your current cards to maximize total rewards.",
+            options: [
+              { icon: "✅", text: "Yes", subtext: "I’m open to pairing with my current cards to maximize total rewards" },
+              { icon: "❌", text: "No", subtext: "I will use one card for everything" },
+            ],
           },
           {
-           question: "Are you looking for a good intro offer or long term rewards?",
-           description: "The algorithm will calculate rewards value over your desired timeframe.",
-           options: [
-             { icon: "💳", text: "Good Intro Offer", subtext: "Optimize rewards for the 1st year" },
-             { icon: "⚖️", text: "Balanced", subtext: "Optimize rewards over 3 years" },
-             { icon: "📅", text: "Long Term Rewards", subtext: "Optimize rewards over 10 years" },
-           ],
+            question: "Are you looking for a good intro offer or long term rewards?",
+            description: "The algorithm will calculate rewards value over your desired timeframe.",
+            options: [
+              { icon: "💳", text: "Good Intro Offer", subtext: "Optimize rewards for the 1st year" },
+              { icon: "⚖️", text: "Balanced", subtext: "Optimize rewards over 3 years" },
+              { icon: "📅", text: "Long Term Rewards", subtext: "Optimize rewards over 10 years" },
+            ],
           },
           {
             question: "Estimate how much you spend monthly.",
@@ -305,11 +315,14 @@
             } else {
               alert("No card recommendation available at this time.");
             }
-
+  
             console.log("recommendedCards length:", this.recommendedCards.length)
   
             // Log para verificar recommendedCards
             console.log("Tarjetas recomendadas:", this.recommendedCards);
+  
+            // Establecer quizSubmitted en true después de un envío exitoso
+            this.quizSubmitted = true;
   
           } catch (error) {
             console.error("Error saving quiz answers or fetching recommended cards:", error);
@@ -337,93 +350,93 @@
         }
       },
   
-    async fetchCardDetails(cardKey) {
+      async fetchCardDetails(cardKey) {
         // Obtener los detalles de la tarjeta
         const detailsOptions = {
-            method: 'GET',
-            url: `https://rewards-credit-card-api.p.rapidapi.com/creditcard-detail-bycard/${encodeURIComponent(cardKey)}`,
-            headers: {
+          method: 'GET',
+          url: `https://rewards-credit-card-api.p.rapidapi.com/creditcard-detail-bycard/${encodeURIComponent(cardKey)}`,
+          headers: {
             'X-RapidAPI-Key': process.env.VUE_APP_RAPIDAPI_KEY,
             'X-RapidAPI-Host': process.env.VUE_APP_RAPIDAPI_HOST
-            }
+          }
         };
-
+  
         try {
-            const detailsResponse = await axios.request(detailsOptions);
-            console.log(`Card Details for ${cardKey}:`, detailsResponse.data);
-
-            // Manejar si la respuesta es un array o un objeto
-            const data = Array.isArray(detailsResponse.data) ? detailsResponse.data[0] : detailsResponse.data;
-
-            console.log('Parsed Data:', data);
-
-            // Verificar que los datos necesarios estén presentes
-            if (data && data.cardName && data.cardUrl) {
+          const detailsResponse = await axios.request(detailsOptions);
+          console.log(`Card Details for ${cardKey}:`, detailsResponse.data);
+  
+          // Manejar si la respuesta es un array o un objeto
+          const data = Array.isArray(detailsResponse.data) ? detailsResponse.data[0] : detailsResponse.data;
+  
+          console.log('Parsed Data:', data);
+  
+          // Verificar que los datos necesarios estén presentes
+          if (data && data.cardName && data.cardUrl) {
             // Obtener la imagen de la tarjeta
             const imageOptions = {
-                method: 'GET',
-                url: `https://rewards-credit-card-api.p.rapidapi.com/creditcard-card-image/${encodeURIComponent(cardKey)}`,
-                headers: {
+              method: 'GET',
+              url: `https://rewards-credit-card-api.p.rapidapi.com/creditcard-card-image/${encodeURIComponent(cardKey)}`,
+              headers: {
                 'X-RapidAPI-Key': process.env.VUE_APP_RAPIDAPI_KEY,
                 'X-RapidAPI-Host': process.env.VUE_APP_RAPIDAPI_HOST
-                }
+              }
             };
-
+  
             try {
-                const imageResponse = await axios.request(imageOptions);
-                const imageData = imageResponse.data[0];
-                const imageUrl = imageData.cardImageUrl;
-
-                // Corregir cardUrl si está mal formado
-                let cardUrl = data.cardUrl;
-                if (cardUrl.includes('-image: ')) {
+              const imageResponse = await axios.request(imageOptions);
+              const imageData = imageResponse.data[0];
+              const imageUrl = imageData.cardImageUrl;
+  
+              // Corregir cardUrl si está mal formado
+              let cardUrl = data.cardUrl;
+              if (cardUrl.includes('-image: ')) {
                 cardUrl = cardUrl.split('-image: ')[0].trim();
                 console.warn(`cardUrl estaba mal formado. Se ha corregido a: ${cardUrl}`);
-                }
-
-                if (imageUrl) {
+              }
+  
+              if (imageUrl) {
                 return {
-                    name: data.cardName,
-                    cardIssuer: data.cardIssuer,
-                    annualFee: data.annualFee,
-                    image: imageUrl,
-                    cardUrl: cardUrl,
+                  name: data.cardName,
+                  cardIssuer: data.cardIssuer,
+                  annualFee: data.annualFee,
+                  image: imageUrl,
+                  cardUrl: cardUrl,
                 };
-                } else {
+              } else {
                 console.warn(`No image URL found for cardKey: ${cardKey}. Using placeholder.`);
                 return {
-                    name: data.cardName,
-                    cardIssuer: data.cardIssuer,
-                    annualFee: data.annualFee,
-                    image: '/assets/placeholder_card.png',
-                    cardUrl: cardUrl,
+                  name: data.cardName,
+                  cardIssuer: data.cardIssuer,
+                  annualFee: data.annualFee,
+                  image: '/assets/placeholder_card.png',
+                  cardUrl: cardUrl,
                 };
-                }
+              }
             } catch (imageError) {
-                console.error(`Error fetching image for cardKey ${cardKey}:`, imageError);
-                // Corregir cardUrl en caso de error al obtener la imagen
-                let cardUrl = data.cardUrl;
-                if (cardUrl.includes('-image: ')) {
+              console.error(`Error fetching image for cardKey ${cardKey}:`, imageError);
+              // Corregir cardUrl en caso de error al obtener la imagen
+              let cardUrl = data.cardUrl;
+              if (cardUrl.includes('-image: ')) {
                 cardUrl = cardUrl.split('-image: ')[0].trim();
                 console.warn(`cardUrl estaba mal formado. Se ha corregido a: ${cardUrl}`);
-                }
-                return {
+              }
+              return {
                 name: data.cardName,
                 cardIssuer: data.cardIssuer,
                 annualFee: data.annualFee,
                 image: '/assets/placeholder_card.png',
                 cardUrl: cardUrl,
-                };
+              };
             }
-            } else {
+          } else {
             console.warn(`Incomplete data for cardKey: ${cardKey}`);
             return null;
-            }
+          }
         } catch (error) {
-            console.error(`Error fetching details for cardKey ${cardKey}:`, error);
-            return null;
+          console.error(`Error fetching details for cardKey ${cardKey}:`, error);
+          return null;
         }
-    }
+      }
     }
   };
   </script>
@@ -657,5 +670,16 @@
   .learn-more:hover {
     background-color: #0056b3;
   }
+  
+  /* Estilos adicionales para el mensaje de agradecimiento */
+  .thank-you-message {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  .thank-you-message h2 {
+    color: white;
+  }
   </style>
+  
   
