@@ -65,29 +65,11 @@
       <div v-if="showLoginPrompt" class="login-prompt">
         <p>{{ loginMessage }}</p>
       </div>
-  
-      <!-- Loading Spinner -->
-      <div v-if="isLoading" class="loading-spinner">
-        Loading your recommended card...
-      </div>
-  
-      <!-- Recommended Cards Section -->
-      <div v-if="!isLoading && recommendedCards.length > 0" class="recommended-cards">
-        <h2>We Recommend:</h2>
-        <div class="cards-container">
-          <div v-for="(card, index) in recommendedCards" :key="index" class="card">
-            <img :src="card.image" :alt="card.name" class="card-image" />
-            <h3>{{ card.name }}</h3>
-            <p>Issuer: {{ card.cardIssuer }}</p>
-            <p>Annual Fee: ${{ card.annualFee }}</p>
-          </div>
-        </div>
-      </div>
     </div>
   </template>
   
   <script>
-  import axios from 'axios';
+
   import { setDoc, doc } from "firebase/firestore";
   import { getAuth } from "firebase/auth";
   import { db } from "@/firebase"; // Firebase config
@@ -100,8 +82,6 @@
         quizAnswers: [], // Store answers for all questions
         loginMessage: "",
         showLoginPrompt: false,
-        recommendedCards: [], // Store the recommended cards
-        isLoading: false, // Handle loading state
         quizzes: [
           {
             question: "What type of credit card are you looking for?",
@@ -239,6 +219,7 @@
         const user = auth.currentUser; 
   
         if (user) {
+          this.showLoginPrompt = true;
   
           try {
             const userId = user.uid;
@@ -248,115 +229,15 @@
               timestamp: new Date(),
               userId: userId
             });
-  
-            // Call RapidAPI to get recommended cards
-            this.isLoading = true;
-  
-            // Prepare query parameters based on quizAnswers
-            const params = {
-              personalOrBusiness: this.quizAnswers[0],
-              annualFeePreference: this.quizAnswers[1],
-              internationalUse: this.quizAnswers[2],
-              signupBonusImportance: this.quizAnswers[3],
-              annualFeeFirstYear: this.quizAnswers[4],
-              rewardsRedemption: this.quizAnswers[5],
-              creditScore: this.quizAnswers[6],
-              additionalInfo: this.quizAnswers[7],
-              pairingPreference: this.quizAnswers[8],
-              rewardsTimeframe: this.quizAnswers[9],
-              totalMonthlySpending: this.quizAnswers[10],
-            };
-  
-            // Log the parameters for debugging
-            console.log("API Request Parameters:", params);
-  
-            console.log('Clave API:', process.env.VUE_APP_RAPIDAPI_KEY);
-            console.log('Host API:', process.env.VUE_APP_RAPIDAPI_HOST);
-  
-            // Make the recommendation API call
-            const recommendResponse = await axios.get('https://rewards-credit-card-api.p.rapidapi.com/creditcard-detail-bycard/amex-gold', {
-              params: params,
-              headers: {
-                'X-RapidAPI-Key': process.env.VUE_APP_RAPIDAPI_KEY,
-                'X-RapidAPI-Host': process.env.VUE_APP_RAPIDAPI_HOST,
-              }
-            });
-  
-            // Log the API response for debugging
-            console.log("Recommend API Response:", recommendResponse.data);
-  
-            if (Array.isArray(recommendResponse.data) && recommendResponse.data.length > 0) {
-              // Fetch detailed information for each recommended card
-              const detailedCardPromises = recommendResponse.data.map(card => this.fetchCardDetails(card.cardKey));
-              const detailedCards = await Promise.all(detailedCardPromises);
-  
-              // Filter out any failed fetches (null)
-              this.recommendedCards = detailedCards.filter(card => card !== null);
-            } else if (typeof recommendResponse.data === 'object' && recommendResponse.data.cardKey) {
-              // Si la respuesta es un solo objeto con cardKey
-              const detailedCard = await this.fetchCardDetails(recommendResponse.data.cardKey);
-              if (detailedCard) {
-                this.recommendedCards = [detailedCard];
-              }
-            } else {
-              alert("No card recommendation available at this time.");
-            }
-  
+            alert("Quiz answers saved successfully! Thank you for completing the quiz!");
+            window.location.href = "/";
+
           } catch (error) {
-            console.error("Error saving quiz answers or fetching recommended cards:", error);
-  
-            // Check if error.response exists to get more details
-            if (error.response) {
-              console.error("API Error Response:", error.response.data);
-              alert(`Error: ${error.response.data.message || "There was an error processing your request. Please try again later."}`);
-            } else if (error.request) {
-              console.error("No response received from API:", error.request);
-              alert("Error: No response received from the recommendation service. Please try again later.");
-            } else {
-              console.error("Error setting up API request:", error.message);
-              alert("Error: Unable to process your request. Please try again later.");
-            }
-          } finally {
-            this.isLoading = false;
+            console.error("Error saving quiz answers: ", error);
+          }
+          setTimeout(() => {
             this.showLoginPrompt = false;
-          }
-        } else {
-          // Handle the case where the user is not logged in
-          this.loginMessage = "Please log in to save your quiz results.";
-          this.showLoginPrompt = true;
-        }
-      },
-      
-      async fetchCardDetails(cardKey) {
-        const options = {
-          method: 'GET',
-          //url: `/creditcard-detail-bycard/${cardKey}`, // URL dinámica usando cardKey
-          url: `https://rewards-credit-card-api.p.rapidapi.com/creditcard-detail-bycard/amex-gold`,
-          headers: {
-            'X-RapidAPI-Key': process.env.VUE_APP_RAPIDAPI_KEY,
-            'X-RapidAPI-Host': process.env.VUE_APP_RAPIDAPI_HOST
-          }
-        };
-  
-        try {
-          const response = await axios.request(options);
-          console.log(`Card Details for ${cardKey}:`, response.data);
-  
-          if (response.data && response.data.cardName && response.data.cardUrl && response.data.cardImageUrl) {
-            return {
-              name: response.data.cardName,
-              cardIssuer: response.data.cardIssuer,
-              annualFee: response.data.annualFee,
-              image: response.data.cardImageUrl,
-              cardUrl: response.data.cardUrl,
-            };
-          } else {
-            console.warn(`Incomplete data for cardKey: ${cardKey}`);
-            return null;
-          }
-        } catch (error) {
-          console.error(`Error fetching details for cardKey ${cardKey}:`, error);
-          return null;
+          }, 1000);
         }
       }
     }
@@ -526,74 +407,4 @@
   .back-button:hover {
     background-color: gray;
   }
-  
-  .login-prompt {
-    position: fixed;
-    top: 20px;
-    background-color: #ffdddd;
-    padding: 10px 20px;
-    border: 1px solid #ff5c5c;
-    border-radius: 5px;
-  }
-  
-  .loading-spinner {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(255, 255, 255, 0.8);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 1.5em;
-    color: #333;
-  }
-  
-  .recommended-cards {
-    margin-top: 40px;
-    text-align: center;
-    width: 100%;
-  }
-  
-  .cards-container {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 20px;
-  }
-  
-  .card {
-    background-color: #f9f9f9;
-    border-radius: 10px;
-    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
-    padding: 20px;
-    width: 300px;
-    text-align: center;
-  }
-  
-  .card-image {
-    width: 100%;
-    height: auto;
-    border-radius: 10px;
-    margin-bottom: 15px;
-  }
-  
-  .learn-more {
-    display: inline-block;
-    margin-top: 10px;
-    padding: 8px 16px;
-    background-color: #007bff;
-    color: white;
-    border-radius: 4px;
-    text-decoration: none;
-  }
-  
-  .learn-more:hover {
-    background-color: #0056b3;
-  }
-  </style> 
-  
-  
-  
-  
+  </style>
