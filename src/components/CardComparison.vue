@@ -14,6 +14,17 @@
           </thead>
           <tbody>
             <tr>
+              <td>Appearance</td>
+              <td v-for="card in selectedCards" :key="card.cardKey">
+                <img
+                  :src="getCardImage(card.cardKey)"
+                  alt="Card Image"
+                  class="comparison-image"
+                  @error="handleImageError"
+                />
+              </td>
+            </tr>
+            <tr>
               <td>Issuer</td>
               <td v-for="card in selectedCards" :key="card.cardKey">{{ card.cardIssuer || 'N/A' }}</td>
             </tr>
@@ -86,7 +97,6 @@
                 </div>
               </td>
             </tr>
-            <!-- Add more detailed rows as needed -->
           </tbody>
         </table>
         <button @click="clearComparison" class="clear-comparison-button">Clear Comparison</button>
@@ -100,7 +110,7 @@
   export default {
     name: 'CardComparison',
     computed: {
-      ...mapGetters(['comparisonCards']),
+      ...mapGetters(['comparisonCards', 'getCardImage']),
       selectedCards() {
         return this.comparisonCards;
       },

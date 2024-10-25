@@ -144,7 +144,7 @@ export default createStore({
       return state.cardDetailsCache[cardKey];
     },
     getCardImage: (state) => (cardKey) => {
-      return state.cardImages[cardKey];
+        return state.cardImages[cardKey];
     },
     comparisonCards: (state, getters) => {
       return state.selectedCardsForComparison
