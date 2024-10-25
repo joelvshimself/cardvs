@@ -1,51 +1,46 @@
 <template>
   <div class="login-page">
-    <section class="pantalla">
-      <div class="text">
-        <h2>Log in here</h2>
-        <p>Enter your credentials to access your account.</p>
-      </div>
-      <div class="form-container">
-        <form @submit.prevent="login">
-          <label>Email:</label>
-          <input v-model="user.email" type="email" required />
+    <div class="spacer"></div> <!-- Spacer añadido -->
+    <div class="login-container">
+      <div class="left-section">
+        <h2>Hello, <span>welcome!</span></h2>
+        <form @submit.prevent="login" class="login-form">
+          <label>Email address</label>
+          <input v-model="user.email" type="email" placeholder="name@mail.com" required />
 
-          <label>Password:</label>
-          <input v-model="user.password" type="password" required />
+          <label>Password</label>
+          <input v-model="user.password" type="password" placeholder="••••••••" required />
 
-          <button type="submit" class="custom-button">Login</button>
+          <div class="form-options">
+            <a href="#">Forgot password?</a> <!-- Eliminado "Remember me" -->
+          </div>
+
+          <button type="submit" class="login-button">Login</button>
         </form>
-        <p v-if="errorMessage" class="error">{{ errorMessage }}</p>
-        
-        <!-- Botón para iniciar sesión con Google -->
+
         <button @click="loginWithGoogle" class="google-button">
           <img src="@/assets/google_logo.png" alt="Google Logo" class="google-logo" />
           <span>Log in with Google</span>
         </button>
-        
-        <p>
+
+        <p class="signup-link">
           Don't have an account?
-          <router-link to="/register" class="register-link">Register here</router-link>
+          <router-link to="/register">Sign up</router-link>
         </p>
       </div>
-    </section>
-    
-    <InfoSection 
-      title="Welcome to CardVersus"
-      description="Here you can compare and choose the best credit card for your needs."
-    />
+
+      <div class="right-section">
+        <!-- Aquí está la sección derecha con el fondo de color -->
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
 import { getAuth, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
-import InfoSection from '@/components/InfoSection.vue';
 
 export default {
   name: "UserLogin",
-  components: {
-    InfoSection
-  },
   data() {
     return {
       user: {
@@ -61,14 +56,9 @@ export default {
       this.errorMessage = ''; 
 
       try {
-        const userCredential = await signInWithEmailAndPassword(
-          auth,
-          this.user.email,
-          this.user.password
-        );
-        // Successful login
+        const userCredential = await signInWithEmailAndPassword(auth, this.user.email, this.user.password);
         console.log('Authenticated user:', userCredential.user);
-        this.$router.push('/'); 
+        this.$router.push('/');
       } catch (error) {
         this.errorMessage = "Error logging in: " + error.message;
       }
@@ -81,10 +71,8 @@ export default {
       try {
         const result = await signInWithPopup(auth, provider);
         const user = result.user;
-
-        // Successful Google login
         console.log('Logged in with Google:', user);
-        this.$router.push('/'); 
+        this.$router.push('/');
       } catch (error) {
         this.errorMessage = "Error logging in with Google: " + error.message;
       }
@@ -95,110 +83,103 @@ export default {
 
 <style scoped>
 .login-page {
-  background-color: #f0f4ff; 
-  min-height: 125vh; 
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #121139;
+}
+
+.spacer {
+  height: 50px; /* Espacio entre el header y el contenido */
+}
+
+.login-container {
+  display: flex;
+  width: 90%;
+  max-width: 1200px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  border-radius: 15px;
+  overflow: hidden;
+}
+
+.left-section {
+  flex: 1;
+  background-color: #fff;
+  padding: 60px 40px;
   display: flex;
   flex-direction: column;
-  justify-content: center; 
+  justify-content: center;
 }
 
-.pantalla {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
-  max-width: 1200px;
-  margin: 40px auto; 
-  background-color: rgba(255, 255, 255, 0.9); 
-  border-radius: 10px;
-  padding: 40px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+.left-section h2 {
+  font-size: 36px;
+  font-weight: bold;
+  color: #4646F9;
 }
 
-.text {
-  flex: 1;
-  text-align: left;
-  margin-left: 20px; 
+.left-section h2 span {
+  color: #9130F4;
 }
 
-.text h2 {
-  font-size: 48px;
-  color: #3A49F9; 
-  margin-bottom: 10px;
+.login-form {
+  margin-top: 20px;
 }
 
-.text p {
-  font-size: 18px;
-  color: #4A4A4A; 
-}
-
-.form-container {
-  flex: 1;
-  max-width: 400px;
-  margin-right: 20px; 
-}
-
-label {
-  display: block;
+.login-form label {
+  font-size: 14px;
+  color: #333;
   margin-bottom: 5px;
+  display: block;
 }
 
-input {
+.login-form input {
   width: 100%;
   padding: 12px;
   margin-bottom: 20px;
-  border: 1px solid #ccc;
+  border: 2px solid #ccc;
   border-radius: 5px;
   transition: border-color 0.3s;
 }
 
-input:focus {
-  border-color: #3A49F9; /* Color del borde en foco */
-  outline: none;
+.login-form input:focus {
+  border-color: #3A49F9;
 }
 
-.custom-button {
+.form-options {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 20px;
+}
+
+.login-button {
   width: 100%;
-  padding: 10px;
+  padding: 12px;
   background-color: #3A49F9;
-  color: white;
+  color: #fff;
   border: none;
   border-radius: 5px;
   cursor: pointer;
   transition: background-color 0.3s;
 }
 
-.custom-button:hover {
+.login-button:hover {
   background-color: #2c3e50;
 }
 
-.error {
-  color: red;
-  text-align: center;
-  margin-top: 10px;
-}
-
-.register-link {
-  color: #3A49F9; 
-  text-decoration: underline; 
-}
-
 .google-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   background-color: #9130F4;
   color: white;
-  padding: 12px 20px;
+  padding: 12px;
   border: none;
   border-radius: 5px;
-  margin: 20px auto;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  margin: 20px 0;
   cursor: pointer;
   font-size: 16px;
-}
-
-.google-button:hover {
-  background-color: #3A49F9;
+  font-weight: bold;
 }
 
 .google-logo {
@@ -207,12 +188,25 @@ input:focus {
   margin-right: 10px;
 }
 
-.google-button span {
-  font-size: 16px;
-  font-weight: bold;
+.google-button:hover {
+  background-color: #3A49F9;
+}
+
+.signup-link {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.signup-link a {
+  color: #3A49F9;
+  text-decoration: underline;
+}
+
+.right-section {
+  flex: 1;
+  background: linear-gradient(45deg, #9130F4, #4646F9);
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 </style>
-
-
-
-
